@@ -21,13 +21,13 @@ public class Parser {
 
 
     private static class NameParser extends SubParser {
-        Pattern pattern = Pattern.compile("\\p{IsAlphabetic}");
+        Pattern pattern = Pattern.compile("\\p{IsAlphabetic}+");
 
         @Override
         String parse(String[] inputArray) throws ParseException {
             StringJoiner joiner = new StringJoiner(" ");
             int count = 0;
-            for (int i = 0; i < inputArray.length || count == 3; i++) {
+            for (int i = 0; i < inputArray.length && count < 3; i++) {
                 String current = inputArray[i];
                 if (count == 0) {
                     if (i > inputArray.length - 3) throw new ParseException("не удалось распознать информацию о ФИО");
