@@ -1,25 +1,23 @@
 package ru.gb.learn;
 
 import java.text.SimpleDateFormat;
-import java.util.StringJoiner;
 import java.util.regex.Pattern;
 
 public class Parser {
     public Account parse(String[] inputArray) throws ParseException {
         if (inputArray.length != 6)
             throw new ParseException("Введено неверное количество данных: " + inputArray.length);
-        String fio = parseName(inputArray);
+        String[] fullName = parseName(inputArray);
         String birthDate = parseDate(inputArray);
         String phone = parsePhone(inputArray);
         String sex = parseSex(inputArray);
-        return new Account(fio, birthDate, phone, sex);
+        return new Account(fullName[0],fullName[1],fullName[2], birthDate, phone, sex);
     }
 
 
-    private String parseName(String[] inputArray) throws ParseException {
-        Pattern pattern = Pattern.compile("\\p{IsAlphabetic}+");
-
-        StringJoiner joiner = new StringJoiner(" ");
+    private String[] parseName(String[] inputArray) throws ParseException {
+        Pattern pattern = Pattern.compile("\\p{IsAlphabetic}{2,}");
+        String[] fullName = new String[3];
         int count = 0;
         for (int i = 0; i < inputArray.length && count < 3; i++) {
             String current = inputArray[i];
@@ -27,17 +25,17 @@ public class Parser {
                 if (i > inputArray.length - 3) throw new ParseException("не удалось распознать информацию о ФИО");
                 if (current != null && pattern.matcher(current).matches()) {
                     inputArray[i] = null;
-                    joiner.add(current);
+                    fullName [count] = current;
                     count++;
                 }
             } else {
                 if (current == null || !pattern.matcher(current).matches())
                     throw new ParseException("не удалось распознать полную информацию о ФИО");
-                joiner.add(current);
+                fullName [count] = current;
                 count++;
             }
         }
-        return joiner.toString();
+        return fullName;
     }
 
 
